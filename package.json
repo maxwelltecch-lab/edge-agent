@@ -1,0 +1,13 @@
+{
+  "name": "pulseline-edge-agent",
+  "version": "1.0.0",
+  "description": "Small HTTP agent that runs on each WireGuard edge node. The main backend calls it to add/remove peers per boost session and to read live transfer stats. This is the piece that turns tunnelService.js's stub into a real, callable control plane.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "dotenv": "^16.4.5"
+  }
+}
