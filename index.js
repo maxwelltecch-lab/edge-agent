@@ -54,6 +54,17 @@ async function ensureNat() {
 const app = express();
 app.use(express.json());
 
+// PUBLIC, unauthenticated, and deliberately dumb: it does nothing but
+// echo back immediately, so it's safe to expose on the open internet and
+// is exactly what the *phone* should be timing to get a real latency
+// number. Previously the app's displayed "ms" came from the BACKEND
+// timing a request to this node's /health — often over a loopback or LAN
+// hop next to the backend itself, which is why it read 1-2ms while the
+// actual in-game ping (phone -> this node -> game server) was ~120ms.
+// This route sits before the X-Agent-Secret middleware on purpose — /peers,
+// /stats, and /health (which reveals interface info) stay protected.
+app.get("/ping", (req, res) => res.json({ ok: true, t: Date.now() }));
+
 app.use((req, res, next) => {
   if (req.headers["x-agent-secret"] !== process.env.AGENT_SHARED_SECRET) {
     return res.status(401).json({ error: "unauthorized" });
